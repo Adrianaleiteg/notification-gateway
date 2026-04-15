@@ -1,4 +1,4 @@
-package com.notification.gateway.model.enums;
+package com.notification.gateway.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
