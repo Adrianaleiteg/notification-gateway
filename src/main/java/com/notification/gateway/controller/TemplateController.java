@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.notification.gateway.model.Template;
+import com.notification.gateway.dto.request.TemplateRequest;
+import com.notification.gateway.dto.response.TemplateResponse;
 import com.notification.gateway.service.TemplateService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,18 +22,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TemplateController {
     private final TemplateService templateService;
-	
+
     @GetMapping
-    public ResponseEntity<List<Template>> findAll() {
+    public ResponseEntity<List<TemplateResponse>> findAll() {
         return ResponseEntity.ok(templateService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Template> findById(@PathVariable Long id) {
+    public ResponseEntity<TemplateResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(templateService.findById(id));
     }
+
     @PostMapping
-    public ResponseEntity<Template> save(@RequestBody Template template){
+    public ResponseEntity<TemplateResponse> save(@RequestBody TemplateRequest template) {
         return ResponseEntity.status(HttpStatus.CREATED).body(templateService.save(template));
     }
 }
