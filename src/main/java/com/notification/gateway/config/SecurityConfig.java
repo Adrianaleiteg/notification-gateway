@@ -10,20 +10,19 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")
-                )
-                .headers(headers -> headers
-                        .frameOptions(frame -> frame.sameOrigin())
-                );
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/h2-console/**").permitAll()
+                                                .requestMatchers("/api/**").permitAll()
+                                                .anyRequest().authenticated())
+                                .csrf(csrf -> csrf
+                                                .ignoringRequestMatchers("/h2-console/**")
+                                                .ignoringRequestMatchers("/api/**"))
+                                .headers(headers -> headers
+                                                .frameOptions(frame -> frame.sameOrigin()));
 
-        return http.build();
-    }
+                return http.build();
+        }
 }
