@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.notification.gateway.repository.TemplateVersionRepository;
+import com.notification.gateway.dto.request.TemplateVersionRequest;
+import com.notification.gateway.dto.response.TemplateVersionResponse;
+import com.notification.gateway.mapper.TemplateVersionMapper;
 import com.notification.gateway.model.TemplateVersion;
 
 import lombok.RequiredArgsConstructor;
@@ -13,17 +16,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TemplateVersionService {
     private final TemplateVersionRepository templateVersionRepository;
+    private final TemplateVersionMapper templateVersionMapper;
 
-    public List<TemplateVersion> findAll() {
-        return templateVersionRepository.findAll();
+    public List<TemplateVersionResponse> findAll() {
+        return templateVersionRepository.findAll()
+        .stream()
+        .map(templateVersionMapper::toResponse)
+        .toList();
     }
 
-    public TemplateVersion findById(Long id) {
-        return templateVersionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Template Version not found"));
+    public TemplateVersionResponse findById(Long id) {
+        TemplateVersion templateVersion = templateVersionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Template version not found"));
+        return templateVersionMapper.toResponse(templateVersion);
     }
 
-    public TemplateVersion save(TemplateVersion templateVersion) {
-        return templateVersionRepository.save(templateVersion);
+    public TemplateVersionResponse save(TemplateVersionRequest request) {
+        TemplateVersion templateVersion = templateVersionMapper.toEntity(request);
+        TemplateVersion saved = templateVersionRepository.save(templateVersion);
+        return templateVersionMapper.toResponse(saved);
     }
 }

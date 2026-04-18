@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.notification.gateway.repository.EmailMessageRepository;
+import com.notification.gateway.dto.request.EmailMessageRequest;
+import com.notification.gateway.dto.response.EmailMessageResponse;
+import com.notification.gateway.mapper.EmailMessageMapper;
 import com.notification.gateway.model.EmailMessage;
 import com.notification.gateway.model.enums.MessageStatus;
 
@@ -14,21 +17,33 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EmailMessageService {
     private final EmailMessageRepository emailMessageRepository;
-    
-    public List<EmailMessage> findAll(){
-        return emailMessageRepository.findAll();
+    private final EmailMessageMapper emailMessagemapper;
+
+    public List<EmailMessageResponse> findAll() {
+        return emailMessageRepository.findAll()
+                .stream()
+                .map(emailMessagemapper::toResponse)
+                .toList();
     }
 
-    public EmailMessage findById(Long id){
-        return emailMessageRepository.findById(id).orElseThrow(() -> new RuntimeException("Email message not found"));
+    public EmailMessageResponse findById(Long id) {
+        EmailMessage emailMessage = emailMessageRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Email message not found"));
+        return emailMessagemapper.toResponse(emailMessage);
     }
 
-    public EmailMessage save(EmailMessage emailMessage){
+    public EmailMessageResponse save(EmailMessageRequest request) {
+        EmailMessage emailMessage = emailMessagemapper.toEntity(request);
         emailMessage.setStatus(MessageStatus.PENDING);
-        return emailMessageRepository.save(emailMessage);
+        EmailMessage saved = emailMessageRepository.save(emailMessage);
+
+        return emailMessagemapper.toResponse(saved);
     }
 
-    public List<EmailMessage> findScheduled(){
-        return emailMessageRepository.findByStatus(MessageStatus.SCHEDULED);
+    public List<EmailMessageResponse> findScheduled() {
+        return emailMessageRepository.findByStatus(MessageStatus.SCHEDULED)
+                .stream()
+                .map(emailMessagemapper::toResponse)
+                .toList();
     }
 }

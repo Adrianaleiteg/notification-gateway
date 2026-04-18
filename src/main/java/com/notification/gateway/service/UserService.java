@@ -2,33 +2,44 @@ package com.notification.gateway.service;
 
 import com.notification.gateway.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
+import com.notification.gateway.dto.request.UserRequest;
+import com.notification.gateway.dto.response.UserResponse;
+import com.notification.gateway.mapper.UserMapper;
 import com.notification.gateway.model.User;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public List<User> findAll(){
-        return userRepository.findAll();
+    public List<UserResponse> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toResponse)
+                .toList();
     }
 
-    public User findById(Long id){
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserResponse findById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toResponse(user);
     }
 
-    public User findByEmail(String email){
-        return userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+    public UserResponse findByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toResponse(user);
     }
-    
-    public User save(User user){
-        return userRepository.save(user);
+
+    public UserResponse save(UserRequest request) {
+        User user = userMapper.toEntity(request);
+        User saved = userRepository.save(user);
+        return userMapper.toResponse(saved);
     }
 }

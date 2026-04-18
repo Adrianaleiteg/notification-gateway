@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.notification.gateway.dto.request.TemplateRequest;
+import com.notification.gateway.dto.response.TemplateResponse;
+import com.notification.gateway.mapper.TemplateMapper;
 import com.notification.gateway.model.Template;
 import com.notification.gateway.repository.TemplateRepository;
 
@@ -13,16 +16,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TemplateService {
     private final TemplateRepository templateRepository;
+    private final TemplateMapper templateMapper;
 
-    public List<Template> findAll() {
-        return templateRepository.findAll();
-    }
-    
-    public Template findById(Long id) {
-        return templateRepository.findById(id).orElseThrow(() -> new RuntimeException("Template not found"));
+    public List<TemplateResponse> findAll() {
+        return templateRepository.findAll()
+                .stream()
+                .map(templateMapper::toResponse)
+                .toList();
     }
 
-    public Template save(Template template) {
-        return templateRepository.save(template);
+    public TemplateResponse findById(Long id) {
+        Template template = templateRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Template not found"));
+        return templateMapper.toResponse(template);
+    }
+
+    public TemplateResponse save(TemplateRequest request) {
+        Template template = templateMapper.toEntity(request);
+        Template saved = templateRepository.save(template);
+        return templateMapper.toResponse(saved);
     }
 }
