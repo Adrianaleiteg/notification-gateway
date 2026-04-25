@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.notification.gateway.repository.TemplateVersionRepository;
 import com.notification.gateway.dto.request.TemplateVersionRequest;
 import com.notification.gateway.dto.response.TemplateVersionResponse;
+import com.notification.gateway.exception.ResourceNotFoundException;
 import com.notification.gateway.mapper.TemplateVersionMapper;
 import com.notification.gateway.model.TemplateVersion;
+import com.notification.gateway.repository.TemplateVersionRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,14 +21,14 @@ public class TemplateVersionService {
 
     public List<TemplateVersionResponse> findAll() {
         return templateVersionRepository.findAll()
-        .stream()
-        .map(templateVersionMapper::toResponse)
-        .toList();
+                .stream()
+                .map(templateVersionMapper::toResponse)
+                .toList();
     }
 
     public TemplateVersionResponse findById(Long id) {
         TemplateVersion templateVersion = templateVersionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Template version not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Template version not found"));
         return templateVersionMapper.toResponse(templateVersion);
     }
 

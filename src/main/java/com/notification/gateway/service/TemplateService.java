@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.notification.gateway.dto.request.TemplateRequest;
 import com.notification.gateway.dto.response.TemplateResponse;
+import com.notification.gateway.exception.ResourceNotFoundException;
 import com.notification.gateway.mapper.TemplateMapper;
 import com.notification.gateway.model.Template;
 import com.notification.gateway.repository.TemplateRepository;
@@ -27,7 +28,7 @@ public class TemplateService {
 
     public TemplateResponse findById(Long id) {
         Template template = templateRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Template not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Template not found"));
         return templateMapper.toResponse(template);
     }
 

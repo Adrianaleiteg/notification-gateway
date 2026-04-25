@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.notification.gateway.repository.EmailMessageRepository;
 import com.notification.gateway.dto.request.EmailMessageRequest;
 import com.notification.gateway.dto.response.EmailMessageResponse;
+import com.notification.gateway.exception.ResourceNotFoundException;
 import com.notification.gateway.mapper.EmailMessageMapper;
 import com.notification.gateway.model.EmailMessage;
 import com.notification.gateway.model.enums.MessageStatus;
@@ -28,7 +29,7 @@ public class EmailMessageService {
 
     public EmailMessageResponse findById(Long id) {
         EmailMessage emailMessage = emailMessageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Email message not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Email message not found"));
         return emailMessagemapper.toResponse(emailMessage);
     }
 

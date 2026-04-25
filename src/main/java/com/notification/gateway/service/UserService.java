@@ -1,16 +1,17 @@
 package com.notification.gateway.service;
 
-import com.notification.gateway.repository.UserRepository;
-
-import lombok.RequiredArgsConstructor;
-
-import com.notification.gateway.dto.request.UserRequest;
-import com.notification.gateway.dto.response.UserResponse;
-import com.notification.gateway.mapper.UserMapper;
-import com.notification.gateway.model.User;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import com.notification.gateway.dto.request.UserRequest;
+import com.notification.gateway.dto.response.UserResponse;
+import com.notification.gateway.exception.ResourceNotFoundException;
+import com.notification.gateway.mapper.UserMapper;
+import com.notification.gateway.model.User;
+import com.notification.gateway.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -27,13 +28,13 @@ public class UserService {
     }
 
     public UserResponse findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return userMapper.toResponse(user);
     }
 
     public UserResponse findByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return userMapper.toResponse(user);
     }
 
