@@ -26,6 +26,13 @@ public class TemplateVersionService {
                 .toList();
     }
 
+    public List<TemplateVersionResponse> findByTemplateId(Long templateId) {
+        return templateVersionRepository.findByTemplateId(templateId)
+                .stream()
+                .map(templateVersionMapper::toResponse)
+                .toList();
+    }
+
     public TemplateVersionResponse findById(Long id) {
         TemplateVersion templateVersion = templateVersionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Template version not found"));
@@ -34,6 +41,11 @@ public class TemplateVersionService {
 
     public TemplateVersionResponse save(TemplateVersionRequest request) {
         TemplateVersion templateVersion = templateVersionMapper.toEntity(request);
+
+        int nextVersion = templateVersionRepository
+                .findByTemplateId(request.getTemplateId()).size() + 1;
+        templateVersion.setVersionNumber(nextVersion);
+
         TemplateVersion saved = templateVersionRepository.save(templateVersion);
         return templateVersionMapper.toResponse(saved);
     }
