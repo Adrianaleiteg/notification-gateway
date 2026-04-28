@@ -1,5 +1,6 @@
 package com.notification.gateway.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -41,20 +42,28 @@ public class EmailMessageService {
 
     public EmailMessageResponse save(EmailMessageRequest request) {
         EmailMessage emailMessage = emailMessagemapper.toEntity(request);
-        emailMessage.setStatus(MessageStatus.PENDING);
-        EmailMessage saved = emailMessageRepository.save(emailMessage);
 
-        TemplateVersion templateVersion = templateVersionRepository.findById(request.getTemplateVersionId())
-                .orElseThrow(() -> new ResourceNotFoundException("TemplateVersion not found"));
+        if (emailMessage.getScheduledAt() != null &&
+                emailMessage.getScheduledAt().isAfter(LocalDateTime.now())) {
 
-        String body = templateVersion.getBody();
-        String subject = templateVersion.getSubject();
+            emailMessage.setStatus(MessageStatus.SCHEDULED);
+            EmailMessage saved = emailMessageRepository.save(emailMessage);
+            return emailMessagemapper.toResponse(saved);
 
-        boolean isHtml = templateVersion.getContentType() == ContentType.HTML;
-        emailProvider.send(saved, subject, body, isHtml);
-        saved.setStatus(MessageStatus.SENT);
-        EmailMessage updated = emailMessageRepository.save(saved);
-        return emailMessagemapper.toResponse(updated);
+        } else {
+            emailMessage.setStatus(MessageStatus.PENDING);
+            EmailMessage saved = emailMessageRepository.save(emailMessage);
+
+            TemplateVersion templateVersion = templateVersionRepository.findById(request.getTemplateVersionId())
+                    .orElseThrow(() -> new ResourceNotFoundException("TemplateVersion not found"));
+
+            boolean isHtml = templateVersion.getContentType() == ContentType.HTML;
+            emailProvider.send(saved, templateVersion.getSubject(), templateVersion.getBody(), isHtml);
+
+            saved.setStatus(MessageStatus.SENT);
+            EmailMessage updated = emailMessageRepository.save(saved);
+            return emailMessagemapper.toResponse(updated);
+        }
     }
 
     public List<EmailMessageResponse> findScheduled() {
