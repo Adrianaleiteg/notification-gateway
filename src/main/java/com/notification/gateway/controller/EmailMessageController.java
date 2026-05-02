@@ -7,6 +7,7 @@ import com.notification.gateway.dto.request.EmailMessageRequest;
 import com.notification.gateway.dto.response.EmailMessageResponse;
 import com.notification.gateway.service.EmailMessageService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class EmailMessageController {
     }
 
     @PostMapping
-    public ResponseEntity<EmailMessageResponse> save(@RequestBody EmailMessageRequest emailMessage) {
+    public ResponseEntity<EmailMessageResponse> save(@Valid @RequestBody EmailMessageRequest emailMessage) {
         return ResponseEntity.status(HttpStatus.CREATED).body(emailMessageService.save(emailMessage));
     }
 

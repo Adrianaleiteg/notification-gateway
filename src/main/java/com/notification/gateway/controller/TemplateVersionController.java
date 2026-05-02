@@ -15,6 +15,7 @@ import com.notification.gateway.dto.request.TemplateVersionRequest;
 import com.notification.gateway.dto.response.TemplateVersionResponse;
 import com.notification.gateway.service.TemplateVersionService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,7 +35,7 @@ public class TemplateVersionController {
     }
 
     @PostMapping
-    public ResponseEntity<TemplateVersionResponse> save(@RequestBody TemplateVersionRequest templateVersion) {
+    public ResponseEntity<TemplateVersionResponse> save(@Valid @RequestBody TemplateVersionRequest templateVersion) {
         return ResponseEntity.status(HttpStatus.CREATED).body(templateVersionService.save(templateVersion));
     }
 }
