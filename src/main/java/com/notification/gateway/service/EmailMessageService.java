@@ -59,12 +59,14 @@ public class EmailMessageService {
                     .orElseThrow(() -> new ResourceNotFoundException("TemplateVersion not found"));
 
             String body = templateVersion.getBody();
+            String subject = templateVersion.getSubject();
             if (request.getVariables() != null && !request.getVariables().isEmpty()) {
                 body = replaceVariables(body, request.getVariables());
+                subject = replaceVariables(subject, request.getVariables());
             }
 
             boolean isHtml = templateVersion.getContentType() == ContentType.HTML;
-            emailProvider.send(saved, templateVersion.getSubject(), body, isHtml);
+            emailProvider.send(saved, subject, body, isHtml);
 
             saved.setStatus(MessageStatus.SENT);
             EmailMessage updated = emailMessageRepository.save(saved);
