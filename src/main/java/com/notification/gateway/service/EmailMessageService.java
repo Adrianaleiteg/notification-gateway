@@ -2,6 +2,7 @@ package com.notification.gateway.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -57,13 +58,19 @@ public class EmailMessageService {
             TemplateVersion templateVersion = templateVersionRepository.findById(request.getTemplateVersionId())
                     .orElseThrow(() -> new ResourceNotFoundException("TemplateVersion not found"));
 
+            String body = templateVersion.getBody();
+            if (request.getVariables() != null && !request.getVariables().isEmpty()) {
+                body = replaceVariables(body, request.getVariables());
+            }
+
             boolean isHtml = templateVersion.getContentType() == ContentType.HTML;
-            emailProvider.send(saved, templateVersion.getSubject(), templateVersion.getBody(), isHtml);
+            emailProvider.send(saved, templateVersion.getSubject(), body, isHtml);
 
             saved.setStatus(MessageStatus.SENT);
             EmailMessage updated = emailMessageRepository.save(saved);
             return emailMessagemapper.toResponse(updated);
         }
+
     }
 
     public List<EmailMessageResponse> findScheduled() {
@@ -71,5 +78,16 @@ public class EmailMessageService {
                 .stream()
                 .map(emailMessagemapper::toResponse)
                 .toList();
+    }
+
+    private String replaceVariables(String body, Map<String, String> variables) {
+        for (Map.Entry<String, String> entry : variables.entrySet()) {
+            String chave = entry.getKey();
+            String valor = entry.getValue();
+
+            body = body.replace("{{" + chave + "}}", valor);
+
+        }
+        return body;
     }
 }

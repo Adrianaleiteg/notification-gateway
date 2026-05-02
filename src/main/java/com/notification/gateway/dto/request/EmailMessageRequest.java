@@ -1,6 +1,7 @@
 package com.notification.gateway.dto.request;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -29,4 +30,6 @@ public class EmailMessageRequest {
     private String bccEmails;
 
     private LocalDateTime scheduledAt;
+
+    private Map<String, String> variables;
 }
