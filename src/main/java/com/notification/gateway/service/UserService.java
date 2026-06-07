@@ -46,6 +46,9 @@ public class UserService {
         }
         User user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        if (user.getRole() == null || user.getRole().isBlank()) {
+            user.setRole("ROLE_USER");
+        }
         User saved = userRepository.save(user);
         return userMapper.toResponse(saved);
     }
