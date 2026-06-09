@@ -22,6 +22,7 @@ public class TemplateMapper {
             .name(template.getName())
             .description(template.getDescription())
             .active(template.getActive())
+            .group(template.getGroupName())
             .createdAt(template.getCreatedAt())
             .build();
 }

@@ -24,6 +24,7 @@ public class DataSeeder implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("teste123"));
             admin.setEmail("teste@admin.com");
             admin.setRole("ROLE_ADMIN");
+            admin.setGroupName("TI");
 
             userRepository.save(admin);
         }

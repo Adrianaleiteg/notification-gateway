@@ -16,6 +16,7 @@ public class TemplateResponse {
     private String name;
     private String description;
     private Boolean active;
+    private String group;
     private LocalDateTime createdAt;
 
 }
