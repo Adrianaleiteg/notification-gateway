@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.notification.gateway.model.User;
+import com.notification.gateway.model.enums.GroupArea;
 import com.notification.gateway.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class DataSeeder implements CommandLineRunner {
             admin.setPassword(passwordEncoder.encode("teste123"));
             admin.setEmail("teste@admin.com");
             admin.setRole("ROLE_ADMIN");
-            admin.setGroupName("TI");
+            admin.setGroupName(GroupArea.TI);
 
             userRepository.save(admin);
         }
