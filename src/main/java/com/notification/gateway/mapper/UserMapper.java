@@ -13,8 +13,8 @@ public class UserMapper {
                 .name(request.getName())
                 .email(request.getEmail())
                 .role(request.getRole())
-                .groupName(request.getGroup())
                 .password(request.getPassword())
+                .groupName(request.getGroupName())
                 .build();
     }
 
@@ -24,7 +24,7 @@ public class UserMapper {
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole())
-                .group(user.getGroupName())
+                .groupName(user.getGroupName())
                 .createdAt(user.getCreatedAt())
                 .build();
     }

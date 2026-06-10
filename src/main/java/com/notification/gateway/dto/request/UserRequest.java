@@ -1,5 +1,7 @@
 package com.notification.gateway.dto.request;
 
+import com.notification.gateway.model.enums.GroupArea;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +16,5 @@ public class UserRequest {
     private String email;
     private String password;
     private String role;
-    private String group;
+    private GroupArea groupName;
 }

@@ -3,6 +3,8 @@ package com.notification.gateway.dto.request;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import com.notification.gateway.model.enums.GroupArea;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +32,8 @@ public class EmailMessageRequest {
     private String bccEmails;
 
     private LocalDateTime scheduledAt;
+
+    private GroupArea groupName;
 
     private Map<String, String> variables;
 }

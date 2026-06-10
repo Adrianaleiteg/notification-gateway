@@ -10,6 +10,7 @@ import com.notification.gateway.exception.ResourceNotFoundException;
 import com.notification.gateway.mapper.TemplateMapper;
 import com.notification.gateway.model.Template;
 import com.notification.gateway.model.User;
+import com.notification.gateway.model.enums.GroupArea;
 import com.notification.gateway.repository.TemplateRepository;
 import com.notification.gateway.repository.UserRepository;
 
@@ -23,7 +24,15 @@ public class TemplateService {
     private final UserRepository userRepository;
 
     public List<TemplateResponse> findAll(String email) {
-        return templateRepository.findByGroupName(currentGroup(email))
+        GroupArea group = currentGroup(email);
+        return templateRepository.findByGroupNameOrPublic(group)
+                .stream()
+                .map(templateMapper::toResponse)
+                .toList();
+    }
+
+    public List<TemplateResponse> findAllAdmin() {
+        return templateRepository.findAll()
                 .stream()
                 .map(templateMapper::toResponse)
                 .toList();
@@ -36,14 +45,14 @@ public class TemplateService {
     }
 
     public TemplateResponse save(TemplateRequest request, String email) {
+        GroupArea group = currentGroup(email);
         Template template = templateMapper.toEntity(request);
-        template.setGroupName(currentGroup(email));
+        template.setGroupName(group);
         Template saved = templateRepository.save(template);
         return templateMapper.toResponse(saved);
     }
 
-    // Resolves the group of the authenticated user (identified by email).
-    private String currentGroup(String email) {
+    private GroupArea currentGroup(String email) {
         return userRepository.findByEmail(email)
                 .map(User::getGroupName)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));

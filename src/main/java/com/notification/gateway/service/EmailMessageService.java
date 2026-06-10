@@ -13,10 +13,12 @@ import com.notification.gateway.mapper.EmailMessageMapper;
 import com.notification.gateway.model.EmailMessage;
 import com.notification.gateway.model.TemplateVersion;
 import com.notification.gateway.model.enums.ContentType;
+import com.notification.gateway.model.enums.GroupArea;
 import com.notification.gateway.model.enums.MessageStatus;
 import com.notification.gateway.provider.EmailProvider;
 import com.notification.gateway.repository.EmailMessageRepository;
 import com.notification.gateway.repository.TemplateVersionRepository;
+import com.notification.gateway.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,9 +29,20 @@ public class EmailMessageService {
     private final EmailMessageMapper emailMessagemapper;
     private final EmailProvider emailProvider;
     private final TemplateVersionRepository templateVersionRepository;
+    private final UserRepository userRepository;
 
     public List<EmailMessageResponse> findAll() {
         return emailMessageRepository.findAll()
+                .stream()
+                .map(emailMessagemapper::toResponse)
+                .toList();
+    }
+
+    public List<EmailMessageResponse> findByGroup(String email) {
+        GroupArea group = userRepository.findByEmail(email)
+                .map(u -> u.getGroupName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return emailMessageRepository.findByGroupName(group)
                 .stream()
                 .map(emailMessagemapper::toResponse)
                 .toList();
@@ -41,16 +54,19 @@ public class EmailMessageService {
         return emailMessagemapper.toResponse(emailMessage);
     }
 
-    public EmailMessageResponse save(EmailMessageRequest request) {
+    public EmailMessageResponse save(EmailMessageRequest request, String email) {
+        GroupArea group = userRepository.findByEmail(email)
+                .map(u -> u.getGroupName())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         EmailMessage emailMessage = emailMessagemapper.toEntity(request);
+        emailMessage.setGroupName(group);
 
         if (emailMessage.getScheduledAt() != null &&
                 emailMessage.getScheduledAt().isAfter(LocalDateTime.now())) {
-
             emailMessage.setStatus(MessageStatus.SCHEDULED);
             EmailMessage saved = emailMessageRepository.save(emailMessage);
             return emailMessagemapper.toResponse(saved);
-
         } else {
             emailMessage.setStatus(MessageStatus.PENDING);
             EmailMessage saved = emailMessageRepository.save(emailMessage);
@@ -72,7 +88,6 @@ public class EmailMessageService {
             EmailMessage updated = emailMessageRepository.save(saved);
             return emailMessagemapper.toResponse(updated);
         }
-
     }
 
     public List<EmailMessageResponse> findScheduled() {
@@ -84,11 +99,7 @@ public class EmailMessageService {
 
     private String replaceVariables(String body, Map<String, String> variables) {
         for (Map.Entry<String, String> entry : variables.entrySet()) {
-            String chave = entry.getKey();
-            String valor = entry.getValue();
-
-            body = body.replace("{{" + chave + "}}", valor);
-
+            body = body.replace("{{" + entry.getKey() + "}}", entry.getValue());
         }
         return body;
     }

@@ -39,12 +39,23 @@ public class AuthController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.get("email"));
         String token = jwtService.generateToken(userDetails.getUsername());
-
         return ResponseEntity.ok(Map.of("token", token));
     }
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me(Authentication authentication) {
         return ResponseEntity.ok(userService.findByEmail(authentication.getName()));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
+        userService.forgotPassword(request.get("email"));
+        return ResponseEntity.ok(Map.of("message", "E-mail de recuperação enviado"));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@RequestBody Map<String, String> request) {
+        userService.resetPassword(request.get("token"), request.get("password"));
+        return ResponseEntity.ok(Map.of("message", "Senha alterada com sucesso"));
     }
 }

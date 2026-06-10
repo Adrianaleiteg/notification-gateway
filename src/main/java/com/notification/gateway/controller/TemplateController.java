@@ -27,6 +27,12 @@ public class TemplateController {
 
     @GetMapping
     public ResponseEntity<List<TemplateResponse>> findAll(Authentication authentication) {
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            return ResponseEntity.ok(templateService.findAllAdmin());
+        }
         return ResponseEntity.ok(templateService.findAll(authentication.getName()));
     }
 

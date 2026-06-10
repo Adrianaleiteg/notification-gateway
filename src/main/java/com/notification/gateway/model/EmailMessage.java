@@ -2,6 +2,7 @@ package com.notification.gateway.model;
 
 import java.time.LocalDateTime;
 
+import com.notification.gateway.model.enums.GroupArea;
 import com.notification.gateway.model.enums.MessageStatus;
 
 import jakarta.persistence.Column;
@@ -35,6 +36,10 @@ public class EmailMessage {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "template_version_id", nullable = false)
     private TemplateVersion templateVersion;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "group_name")
+    private GroupArea groupName;
 
     @Column(nullable = false)
     private String toEmail;

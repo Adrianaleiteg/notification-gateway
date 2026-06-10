@@ -2,14 +2,17 @@ package com.notification.gateway.model;
 
 import java.time.LocalDateTime;
 
+import com.notification.gateway.model.enums.GroupArea;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,8 +41,9 @@ public class User {
     @Column
     private String role;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "group_name")
-    private String groupName;
+    private GroupArea groupName;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -48,4 +52,10 @@ public class User {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
+
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
 }
