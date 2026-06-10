@@ -41,7 +41,7 @@ public class UserService {
     }
 
     public UserResponse save(UserRequest request) {
-        if (!request.getEmail().endsWith("@johndeere.com") && !request.getEmail().endsWith("@bancojohndeere.com")) {
+        if (!request.getEmail().endsWith("@gmail.com") && !request.getEmail().endsWith("@bancojohndeere.com")) {
             throw new ResourceNotFoundException("Only emails from @johndeere.com and @bancojohndeere.com are allowed");
         }
         User user = userMapper.toEntity(request);

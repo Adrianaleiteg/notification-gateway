@@ -13,15 +13,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "templates")
+@Table(name = "templates", uniqueConstraints = @UniqueConstraint(columnNames = { "group_name", "name" }))
 public class Template {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
+
+    // Owning group. Templates are visible only to users in this group.
+    @Column(name = "group_name")
+    private String groupName;
 
     @Column
     private String description;

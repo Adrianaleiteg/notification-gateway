@@ -38,6 +38,9 @@ public class User {
     @Column
     private String role;
 
+    @Column(name = "group_name")
+    private String groupName;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
