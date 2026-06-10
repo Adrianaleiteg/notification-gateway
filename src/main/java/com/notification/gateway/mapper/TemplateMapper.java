@@ -9,20 +9,24 @@ import com.notification.gateway.model.Template;
 @Component
 public class TemplateMapper {
     public Template toEntity(TemplateRequest request) {
-    return Template.builder()
-            .name(request.getName())
-            .description(request.getDescription())
-            .active(true)
-            .build();
-}
+        return Template.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .groupName(request.getGroupName())
+                .isPublic(request.getIsPublic() != null ? request.getIsPublic() : false)
+                .active(true)
+                .build();
+    }
 
     public TemplateResponse toResponse(Template template) {
-    return TemplateResponse.builder()
-            .id(template.getId())
-            .name(template.getName())
-            .description(template.getDescription())
-            .active(template.getActive())
-            .createdAt(template.getCreatedAt())
-            .build();
-}
+        return TemplateResponse.builder()
+                .id(template.getId())
+                .name(template.getName())
+                .description(template.getDescription())
+                .active(template.getActive())
+                .isPublic(template.getIsPublic())
+                .groupName(template.getGroupName())
+                .createdAt(template.getCreatedAt())
+                .build();
+    }
 }

@@ -20,20 +20,22 @@ public class EmailMessageMapper {
                 .ccEmails(request.getCcEmails())
                 .bccEmails(request.getBccEmails())
                 .scheduledAt(request.getScheduledAt())
+                .groupName(request.getGroupName())
                 .build();
     }
 
-    public EmailMessageResponse  toResponse(EmailMessage emailMessage){
+    public EmailMessageResponse toResponse(EmailMessage emailMessage) {
         return EmailMessageResponse.builder()
-        .id(emailMessage.getId())
-        .templateVersionId(emailMessage.getTemplateVersion().getId())
-        .toEmail(emailMessage.getToEmail())
-        .ccEmails(emailMessage.getCcEmails())
-        .bccEmails(emailMessage.getBccEmails())
-        .status(emailMessage.getStatus().name())
-        .scheduledAt(emailMessage.getScheduledAt())
-        .sentAt(emailMessage.getSentAt())
-        .createdAt(emailMessage.getCreatedAt())
-        .build();
+                .id(emailMessage.getId())
+                .templateVersionId(emailMessage.getTemplateVersion().getId())
+                .toEmail(emailMessage.getToEmail())
+                .ccEmails(emailMessage.getCcEmails())
+                .bccEmails(emailMessage.getBccEmails())
+                .status(emailMessage.getStatus().name())
+                .groupName(emailMessage.getGroupName())
+                .scheduledAt(emailMessage.getScheduledAt())
+                .sentAt(emailMessage.getSentAt())
+                .createdAt(emailMessage.getCreatedAt())
+                .build();
     }
 }

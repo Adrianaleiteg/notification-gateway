@@ -14,6 +14,7 @@ public class UserMapper {
                 .email(request.getEmail())
                 .role(request.getRole())
                 .password(request.getPassword())
+                .groupName(request.getGroupName())
                 .build();
     }
 
@@ -23,6 +24,7 @@ public class UserMapper {
                 .name(user.getName())
                 .email(user.getEmail())
                 .role(user.getRole())
+                .groupName(user.getGroupName())
                 .createdAt(user.getCreatedAt())
                 .build();
     }
