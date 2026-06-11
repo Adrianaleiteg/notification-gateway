@@ -1,9 +1,6 @@
 package com.notification.gateway.dto.request;
 
-import com.notification.gateway.model.enums.GroupArea;
-
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,8 +19,8 @@ public class TemplateRequest {
     @NotBlank
     private String description;
 
-    @NotNull
-    private GroupArea groupName;
+    // groupName is derived from the authenticated user in TemplateService.save,
+    // so it is intentionally not part of the request payload.
 
     private Boolean isPublic = false;
 }
