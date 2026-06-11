@@ -41,9 +41,6 @@ public class UserController {
             Authentication authentication) {
         boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-        if (!isAdmin) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(request));
     }
 }
