@@ -1,6 +1,7 @@
 package com.notification.gateway.provider;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "email.provider", havingValue = "smtp", matchIfMissing = true)
 @RequiredArgsConstructor
 public class SmtpEmailProvider implements EmailProvider {
 
