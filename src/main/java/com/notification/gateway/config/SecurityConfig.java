@@ -1,8 +1,7 @@
 package com.notification.gateway.config;
 
-import com.notification.gateway.security.JwtAuthenticationFilter;
-import com.notification.gateway.security.UserDetailsServiceImpl;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,7 +20,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.notification.gateway.security.JwtAuthenticationFilter;
+import com.notification.gateway.security.UserDetailsServiceImpl;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +40,8 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/h2-console/**").permitAll()
                                                 .requestMatchers("/api/auth/**").permitAll()
+                                                .requestMatchers("/").permitAll()
+                                                .requestMatchers("/error").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                                                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html",
                                                                 "/v3/api-docs/**")
