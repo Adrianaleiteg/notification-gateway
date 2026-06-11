@@ -12,7 +12,6 @@ public class TemplateMapper {
         return Template.builder()
                 .name(request.getName())
                 .description(request.getDescription())
-                .groupName(request.getGroupName())
                 .isPublic(request.getIsPublic() != null ? request.getIsPublic() : false)
                 .active(true)
                 .build();
